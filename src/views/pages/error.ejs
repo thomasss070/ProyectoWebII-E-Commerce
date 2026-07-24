@@ -1,0 +1,57 @@
+<div class="error-page">
+
+  <div class="error-container">
+
+    <h1><%= status || "Error" %></h1>
+
+    <h2><%= mensaje %></h2>
+
+    <p>
+      <% if (status == 404) { %>
+        Pero podés seguir explorando nuestros productos
+      <% } else if (status == 500) { %>
+        Ocurrió un problema interno. Intentá más tarde.
+      <% } else { %>
+        Algo salió mal.
+      <% } %>
+    </p>
+
+    <input type="text" placeholder="Buscar productos..." class="search-bar">
+
+    <a href="/" class="btn-inicio">
+      Volver al inicio
+    </a>
+
+   <% if (typeof sugeridos !== "undefined" && sugeridos.length > 0) { %>
+
+      <section class="sugeridos">
+
+        <h3>Los más elegidos</h3>
+
+        <div class="productos-container">
+
+          <% sugeridos.forEach(prod => { %>
+
+            <div class="producto">
+
+              <h4><%= prod.nombre %></h4>
+
+              <p>$<%= prod.precio %></p>
+
+              <a href="/products/<%= prod.id %>">
+                Ver producto
+              </a>
+
+            </div>
+
+          <% }) %>
+
+        </div>
+
+      </section>
+
+    <% } %>
+
+  </div>
+
+</div>

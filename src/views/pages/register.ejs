@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/Css/Estilos.css">
+
+    <title>Registro</title>
+
+</head>
+
+<body>
+
+<header class="login-header">
+
+    <a href="/" class="logo-area">
+
+        <img
+            class="logo-login"
+            src="/imagenes/logo.png"
+            alt="logo"
+        >
+
+        <h1 class="nombreTienda-login">Apple</h1>
+
+    </a>
+
+</header>
+
+<div class="login-container">
+
+    <h1 class="login-title">REGISTRATE</h1>
+
+    <form
+        id="registerForm"
+        class="login-form"
+        action="/register"
+        method="POST"
+    >
+
+        <label class="login-label" for="nombre">
+            Nombre:
+        </label>
+
+        <input
+            class="login-input"
+            type="text"
+            id="nombre"
+            name="nombre"
+        >
+
+        <label class="login-label" for="apellido">
+            Apellido:
+        </label>
+
+        <input
+            class="login-input"
+            type="text"
+            id="apellido"
+            name="apellido"
+        >
+
+        <label class="login-label" for="email">
+            Email:
+        </label>
+
+        <input
+            class="login-input"
+            type="email"
+            id="email"
+            name="email"
+        >
+
+        <label class="login-label" for="contrasena">
+            Contraseña:
+        </label>
+
+        <input
+            class="login-input"
+            type="password"
+            id="contrasena"
+            name="contrasena"
+        >
+
+        <p id="error" class="error-text"></p>
+
+        <button
+            class="login-button"
+            type="submit"
+        >
+            Registrarse
+        </button>
+
+    </form>
+
+    <p class="login-link">
+
+        <a class="login-link" href="/login">
+
+            ¿Ya tienes una cuenta? Inicia sesión aquí.
+
+        </a>
+
+        <br>
+
+        <a class="login-link" href="/">
+
+            Volver al inicio
+
+        </a>
+
+    </p>
+
+</div>
+
+<script>
+
+const form = document.getElementById("registerForm");
+
+const error = document.getElementById("error");
+
+form.addEventListener("submit", (e) => {
+
+    error.textContent = "";
+
+    const nombre = document
+        .getElementById("nombre")
+        .value
+        .trim();
+
+    const apellido = document
+        .getElementById("apellido")
+        .value
+        .trim();
+
+    const email = document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const contrasena = document
+        .getElementById("contrasena")
+        .value
+        .trim();
+
+    const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const specialRegex =
+        /[!@#$%^&*(),.?":{}|<>]/;
+
+    const letterRegex =
+        /[A-Za-z]/;
+
+    const numberRegex =
+        /[0-9]/;
+
+    const forbidden = [
+        "password",
+        "1234",
+        "qwerty",
+        "apple",
+        nombre.toLowerCase()
+    ];
+
+    if (
+        !nombre ||
+        !apellido ||
+        !email ||
+        !contrasena
+    ) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "Todos los campos son obligatorios.";
+
+        return;
+    }
+
+    if (!emailRegex.test(email)) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "El email no es válido.";
+
+        return;
+    }
+
+    if (contrasena.length < 8) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "La contraseña debe tener al menos 8 caracteres.";
+
+        return;
+    }
+
+    if (!letterRegex.test(contrasena)) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "La contraseña debe incluir letras.";
+
+        return;
+    }
+
+    if (!numberRegex.test(contrasena)) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "La contraseña debe incluir números.";
+
+        return;
+    }
+
+    if (!specialRegex.test(contrasena)) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "La contraseña debe incluir un carácter especial.";
+
+        return;
+    }
+
+    if (
+        forbidden.some(word =>
+            contrasena.toLowerCase().includes(word)
+        )
+    ) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "La contraseña contiene palabras prohibidas.";
+
+        return;
+    }
+
+    if (
+        contrasena.toLowerCase() ===
+        email.toLowerCase()
+    ) {
+
+        e.preventDefault();
+
+        error.textContent =
+            "La contraseña no puede ser igual al email.";
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>

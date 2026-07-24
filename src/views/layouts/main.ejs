@@ -1,0 +1,92 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Estilos.css">
+</head>
+
+<header class="container-header">
+    <div class="brand">
+        <div class="logo">
+            <a href="/">
+                <img src="/imagenes/logo.png" alt="logo">
+            </a>
+        </div>
+        <h1 class="nombreTienda">Apple</h1>
+    </div>
+
+    <form action="/search" method="GET" class="search">
+        <input type="text" name="q" placeholder="Buscar productos...">
+        <button type="submit"><img src="/imagenes/lupa.png" alt="Buscar" class="Img-Lupa"></button>
+    </form>
+
+    <nav>
+        <a href="/cart"> Carrito (<%= totalCart %>)</a>
+        <a href="/register">Registrarse</a>
+    </nav>
+</header>
+
+
+    <main class="contenido-principal">
+       <%- include(body) %>
+    </main>
+
+    
+
+</body>
+</html>
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-logo">
+
+            <h2>Apple Store</h2>
+
+            <p>
+                Tecnología premium, diseño elegante y la mejor experiencia Apple.
+            </p>
+
+        </div>
+
+        <div class="footer-categorias">
+
+            <h3>Categorías</h3>
+
+            <a href="#iPhone">iPhone</a>
+            <a href="#iPad">iPad</a>
+            <a href="#MacBook">Mac</a>
+
+        </div>
+
+        <div class="footer-links">
+
+            <h3>Enlaces</h3>
+
+            <a href="/">Inicio</a>
+            <a href="/cart">Carrito</a>
+            <a href="/login">Login</a>
+
+        </div>
+
+        <div class="footer-contacto">
+
+            <h3>Contacto</h3>
+
+            <p>soporte@applestore.com</p>
+
+            <p>+54 2657 00-0000</p>
+
+        </div>
+
+    </div>
+
+    <div class="footer-copy">
+
+        <p>
+            © 2026 Apple Store - Todos los derechos reservados
+        </p>
+
+    </div>
+
+</footer>

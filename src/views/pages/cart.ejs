@@ -1,0 +1,75 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Estilos.css">
+</head>
+
+
+    
+    <h1 class="Cart-h1">Carrito de compras</h1>
+
+    <% if (cart.length === 0) { %>
+
+        <p>El carrito está vacío</p>
+
+    <% } else { %>
+
+        <% let total = 0; %>
+
+        <% cart.forEach(item => { %>
+
+            <div class="Cart-div">
+
+                <img class="Cart-img"
+                     src="<%= item.producto.imagen %>"
+                     alt="<%= item.producto.nombre %>">
+
+                <div class="Cart-info">
+
+                    <div class="Cart-text">
+                        <h3><%= item.producto.nombre %></h3>
+
+                        <p>Precio: <%= item.producto.precio %> puntos</p>
+
+                        <p>Cantidad: <%= item.quantity %></p>
+                    </div>
+
+                    <div class="Cart-actions">
+
+                        <form action="/cart/increase" method="POST">
+                            <input type="hidden" name="id" value="<%= item.producto.id %>">
+                            <button type="submit">+</button>
+                        </form>
+
+                        <form action="/cart/decrease" method="POST">
+                            <input type="hidden" name="id" value="<%= item.producto.id %>">
+                            <button type="submit">-</button>
+                        </form>
+
+                        <form action="/cart/remove" method="POST">
+                            <input type="hidden" name="id" value="<%= item.producto.id %>">
+                            <button type="submit">Eliminar</button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <% total += item.producto.precio * item.quantity; %>
+
+        <% }) %>
+
+        <hr>
+
+        <div class="Cart-total">
+
+            <h2>Total: <%= total %> puntos</h2>
+
+            <a href="/checkout">Continuar con el pago</a>
+
+        </div>
+
+    <% } %>
+

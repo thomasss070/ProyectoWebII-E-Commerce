@@ -1,0 +1,108 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Css/Estilos.css">
+</head>
+
+
+<div class="Producto-Container">
+
+    <!-- BLOQUE SUPERIOR -->
+    <div class="Producto-Info">
+
+        <!-- IMAGEN -->
+        <img class="Producto-Img" src="<%= producto.imagen %>">
+
+        <!-- DATOS -->
+        <div class="Producto-Datos">
+
+            <!-- NOMBRE Y PRECIO -->
+            <div class="Producto-Header">
+                <h1><%= producto.nombre %></h1>
+
+                <h3 class="Producto-Precio">
+                    <%= producto.precio %> puntos
+                </h3>
+            </div>
+
+            <!-- DESCRIPCIÓN -->
+            <p class="Producto-Descripcion">
+                <%= producto.descripcion %>
+            </p>
+
+            <!-- ESPECIFICACIONES -->
+            <div class="Producto-Especificaciones">
+
+                <h4>Especificaciones</h4>
+
+                <ul>
+                    <li>
+                        Pantalla:
+                       <%= producto.especificaciones?.pantalla || "No disponible" %>
+                    </li>
+
+                    
+
+                   <li>Pantalla: <%= producto.especificaciones?.pantalla || "No disponible" %></li>
+
+<li>Procesador: <%= producto.especificaciones?.procesador || "No disponible" %></li>
+
+<li>Cámara: <%= producto.especificaciones?.camara || "No disponible" %></li>
+
+<li>Batería: <%= producto.especificaciones?.bateria || "No disponible" %></li>
+                    </li>
+                </ul>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTÓN -->
+    <form class="Producto-Boton"
+          action="/cart/add/<%= producto.id %>"
+          method="POST">
+
+          <% if (producto.stock > 0) { %>
+              <button type="submit">
+                
+                  Agregar al carrito
+              </button>
+          <% } else { %>
+              <button type="button" disabled>
+                    Sin stock
+              </button>
+          <% } %>
+
+
+    </form>
+
+    <hr>
+
+    <!-- RELACIONADOS -->
+    <div class="Relacionados">
+
+        <h3>Productos relacionados</h3>
+
+        <ul>
+
+            <% relacionados.forEach(p => { %>
+
+                <li>
+                    <a href="/products/<%= p.id %>">
+                        <img src="<%= p.imagen %>" class="Relacionados-Img" alt="<%= p.nombre %>">
+                        <h4 class="Relacionados-Nombre"><%= p.nombre %></h4>
+                        <p><%= p.precio.toLocaleString() %></p>
+
+                    </a>
+                </li>
+
+            <% }) %>
+
+        </ul>
+
+    </div>
+
+</div>
+

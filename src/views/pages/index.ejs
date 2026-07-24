@@ -1,0 +1,135 @@
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/Css/Estilos.css">
+</head>
+
+  <div class="container">
+    
+    <div class = "categorias">
+        <a href="#Iphone">Categoria "iPhone"</a>
+        <a href="#iPad">Categoria "iPad"</a>
+        <a href="#MacBook">Categoria "MacBook"</a>
+    </div>
+
+    <form action="/products/order" method="GET" class="form-orden">
+
+    <select name="orden">
+
+        <option value="asc">
+            Precio: menor a mayor
+        </option>
+
+        <option value="desc">
+            Precio: mayor a menor
+        </option>
+
+    </select>
+
+    <button type="submit">
+        Ordenar
+    </button>
+
+</form>
+
+    <h3 class="mas-vendidos-titulo">Mas vendidos</h3> 
+      <div class="mas-vendidos">
+     
+    
+    <% productos.filter(p => p.flag === "true").forEach(p => { %>
+        <a href="/products/<%= p.id %>">
+          <img src="<%= p.imagen %>" alt="<%= p.nombre %>" class="mas-vendidos-img">
+            <p><%= p.nombre %></p>
+            <p><%= p.precio.toLocaleString() %></p>
+          <p>Ver mas</p>
+        </a>
+        <% }) %>
+      </div>
+    
+
+
+
+    <h2 class="categoria-titulo">iPhone</h2>
+<ul class="productos" id="Iphone">
+  <% productos.filter(p => p.categoria === "iPhone").forEach(p => { %>
+    <li>
+      <a href="/products/<%= p.id %>">
+        <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
+        <p><%= p.nombre %></p>
+      </a>
+    </li>
+  <% }) %>
+</ul>
+
+
+
+<h2 class="categoria-titulo">iPad</h2>
+<ul class="productos" id="iPad">
+  <% productos.filter(p => p.categoria === "iPad").forEach(p => { %>
+    <li>
+      <a href="/products/<%= p.id %>">
+        <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
+        <p><%= p.nombre %></p>
+      </a>
+    </li>
+  <% }) %>
+</ul>
+
+
+
+<h2 class="categoria-titulo">MacBook</h2>
+
+<ul class="productos" id="MacBook">
+
+  <% productos.filter(p => p.categoria === "MacBook").forEach(p => { %>
+
+    <li>
+
+      <a href="<%= p.id === 12 ? '/error' : '/products/' + p.id %>">
+
+        <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
+
+        <p><%= p.nombre %></p>
+
+      </a>
+
+    </li>
+
+  <% }) %>
+
+</ul>
+
+  </div>
+
+  <div class="Interes-container">
+
+    <h2>También te puede interesar</h2>
+
+    <ul class="productos">
+
+      <% [...productos]
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 5)
+    .forEach(p => { %>
+
+        <li>
+
+          <a href="/products/<%= p.id %>">
+
+            <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
+
+            <p><%= p.nombre %></p>
+
+            <p><%= p.precio.toLocaleString() %></p>
+
+            <p>Click para ver mas</p>
+
+          </a>
+
+        </li>
+
+      <% }) %>
+
+    </ul>
+
+  </div>
+
