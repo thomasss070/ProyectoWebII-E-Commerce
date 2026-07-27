@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const expressLayouts = require('express-ejs-layouts');
 const path = require('path');
 const session = require('express-session');
@@ -13,6 +14,7 @@ app.set('view engine', 'ejs');
 app.set('layout', 'layouts/main');
 
 // 2. MIDDLEWARES BASE
+app.use(cors());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,6 +23,14 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
+app.use(express.json()); // Necesario para leer JSON en req.body (POST/PUT de la API)
+app.use(express.urlencoded({ extended: false })); // Para formularios EJS tradicionales
+
+
+const testApiRoutes = require('./src/routes/api/testApiRoutes');
+
+app.use('/api', testApiRoutes);
 
 // 3. CART MIDDLEWARE
 app.use((req, res, next) => {
