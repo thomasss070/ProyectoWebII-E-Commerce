@@ -6,8 +6,11 @@ const session = require('express-session');
 require("./src/db/database");
 const app = express();
 
+
 const productRoutes = require('./src/routes/productRoute');
 const apiProductRoutes = require('./src/routes/api/apiProductRoute');
+const categoryRoutes = require('./src/routes/api/categoryRoute');
+const apiStatsRoute = require("./src/routes/api/apiStatsRoute");
 
 // 1. VIEW ENGINE (PRIMERO SIEMPRE)
 app.set('views', path.join(__dirname, 'src/views'));
@@ -17,7 +20,6 @@ app.set('layout', 'layouts/main');
 // 2. MIDDLEWARES BASE
 app.use(cors());
 app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
   secret: 'mysecretkey',
@@ -53,8 +55,8 @@ app.use((req, res, next) => {
 
 app.use("/", productRoutes);
 app.use("/api/products", apiProductRoutes);
-
-
+app.use("/api/categories", categoryRoutes);
+app.use("/api/stats", apiStatsRoute);
 
 app.use((err, req, res, next) => {
 

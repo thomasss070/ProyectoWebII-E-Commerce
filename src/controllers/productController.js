@@ -1,4 +1,4 @@
-const productsService = require("../services/productsServices");
+const productsServices = require("../services/productsServices");
 const cartService = require("../services/cartService");
 const { parse } = require("uuid");
 const normalizeId = require("../utils/normalizeId");
@@ -6,7 +6,7 @@ const normalizeId = require("../utils/normalizeId");
 // home
 const home = (req, res) => {
 
-    const productos = productsService.obtenerTodos();
+    const productos = productsServices.obtenerTodos();
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -20,7 +20,7 @@ const search = (req, res) => {
 
     const query = req.query.q;
 
-    const resultados = productsService.buscar(query);
+    const resultados = productsServices.buscar(query);
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -32,7 +32,7 @@ const search = (req, res) => {
 // listado de productos
 const products = (req, res) => {
 
-    const productos = productsService.obtenerTodos();
+    const productos = productsServices.obtenerTodos();
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -44,12 +44,12 @@ const products = (req, res) => {
 // detalle de producto
 const detail = (req, res) => {
 
-    const producto = productsService.obtenerPorId(req.params.id);
+    const producto = productsServices.obtenerPorId(req.params.id);
 
     //  404 
     if (!producto) {
 
-        const sugeridos = productsService.obtenerTodos().slice(0, 3);
+        const sugeridos = productsServices.obtenerTodos().slice(0, 3);
 
         return res.status(404).render("layouts/main", {
             body: "../pages/error",
@@ -59,7 +59,7 @@ const detail = (req, res) => {
         });
     }
 
-    const relacionados = productsService.obtenerTodos().slice(0, 3);
+    const relacionados = productsServices.obtenerTodos().slice(0, 3);
 
     res.render("layouts/main", {
         body: "../pages/products",
@@ -143,7 +143,7 @@ const processRegister = (req, res) => {
 // error
 const error = (req, res) => {
 
-    const sugeridos = productsService.obtenerTodos().slice(0, 2);
+    const sugeridos = productsServices.obtenerTodos().slice(0, 2);
 
     res.status(404).render("layouts/main", {
         body: "../pages/error",
@@ -157,7 +157,7 @@ const orderByPrice = (req, res) => {
     const orden = req.query.orden;
 
     const productos =
-        productsService.ordenarPorPrecio(orden);
+        productsServices.ordenarPorPrecio(orden);
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -167,14 +167,14 @@ const orderByPrice = (req, res) => {
 
 // API - Obtener todos los productos
 const apiGetAll = (req, res) => {
-    const productos = productsService.obtenerTodos();
+    const productos = productsServices.obtenerTodos();
 
     res.status(200).json(productos);
 };
 
 // API - Obtener un producto por ID
 const apiGetById = (req, res) => {
-    const producto = productsService.obtenerPorId(req.params.id);
+    const producto = productsServices.obtenerPorId(req.params.id);
 
     if (!producto) {
         return res.status(404).json({
@@ -187,7 +187,7 @@ const apiGetById = (req, res) => {
 
 // API - Crear un producto
 const apiCreate = (req, res) => {
-    const id = productsService.crear(req.body);
+    const id = productsServices.crear(req.body);
 
     res.status(201).json({
         message: "Producto creado",
@@ -197,7 +197,13 @@ const apiCreate = (req, res) => {
 
 // API - Actualizar un producto
 const apiUpdate = (req, res) => {
-    productsService.actualizar(req.params.id, req.body);
+    const result = productsServices.actualizar(req.params.id, req.body);
+
+    if (!result || result.changes === 0) {
+        return res.status(404).json({
+            error: "Producto no encontrado"
+        });
+    }
 
     res.status(200).json({
         message: "Producto actualizado"
@@ -206,13 +212,18 @@ const apiUpdate = (req, res) => {
 
 // API - Eliminar un producto
 const apiDelete = (req, res) => {
-    productsService.eliminar(req.params.id);
+    const result = productsServices.eliminar(req.params.id);
+
+    if (!result || result.changes === 0) {
+        return res.status(404).json({
+            error: "Producto no encontrado"
+        });
+    }
 
     res.status(200).json({
         message: "Producto eliminado"
     });
 };
-
 
 module.exports = {
     home,
@@ -230,7 +241,6 @@ module.exports = {
     error,
     processRegister,
     orderByPrice,
-    // API
     apiGetAll,
     apiGetById,
     apiCreate,

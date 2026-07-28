@@ -85,9 +85,6 @@ function ordenarPorPrecio(orden = "asc") {
     `).all();
 }
 
-module.exports = {
-    ordenarPorPrecio
-};
 
 //obtener relacionados 
 const obtenerRelacionados = (producto) => {
@@ -123,6 +120,67 @@ const obtenerSugeridos = () => {
     }));
 };
 
+// crear producto
+const crear = (producto) => {
+    const result = db.prepare(`
+        INSERT INTO products (
+            nombre,
+            precio,
+            imagen,
+            descripcion,
+            categoria,
+            flag,
+            stock,
+            especificaciones
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+        producto.nombre,
+        producto.precio,
+        producto.imagen,
+        producto.descripcion,
+        producto.categoria,
+        producto.flag,
+        producto.stock,
+        JSON.stringify(producto.especificaciones)
+    );
+
+    return result.lastInsertRowid;
+};
+
+// actualizar producto
+const actualizar = (id, producto) => {
+    return db.prepare(`
+        UPDATE products
+        SET
+            nombre = ?,
+            precio = ?,
+            imagen = ?,
+            descripcion = ?,
+            categoria = ?,
+            flag = ?,
+            stock = ?,
+            especificaciones = ?
+        WHERE id = ?
+    `).run(
+        producto.nombre,
+        producto.precio,
+        producto.imagen,
+        producto.descripcion,
+        producto.categoria,
+        producto.flag,
+        producto.stock,
+        JSON.stringify(producto.especificaciones),
+        id
+    );
+};
+
+// eliminar producto
+const eliminar = (id) => {
+    return db.prepare(`
+        DELETE FROM products
+        WHERE id = ?
+    `).run(id);
+};
 
 module.exports = {
     obtenerTodos,
@@ -131,5 +189,8 @@ module.exports = {
     buscar,
     ordenarPorPrecio,
     obtenerRelacionados,
-    obtenerSugeridos
+    obtenerSugeridos,
+    crear,
+    actualizar,
+    eliminar
 };
