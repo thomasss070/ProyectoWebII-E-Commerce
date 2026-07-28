@@ -165,6 +165,54 @@ const orderByPrice = (req, res) => {
     });
 };
 
+// API - Obtener todos los productos
+const apiGetAll = (req, res) => {
+    const productos = productsService.obtenerTodos();
+
+    res.status(200).json(productos);
+};
+
+// API - Obtener un producto por ID
+const apiGetById = (req, res) => {
+    const producto = productsService.obtenerPorId(req.params.id);
+
+    if (!producto) {
+        return res.status(404).json({
+            error: "Producto no encontrado"
+        });
+    }
+
+    res.status(200).json(producto);
+};
+
+// API - Crear un producto
+const apiCreate = (req, res) => {
+    const id = productsService.crear(req.body);
+
+    res.status(201).json({
+        message: "Producto creado",
+        id
+    });
+};
+
+// API - Actualizar un producto
+const apiUpdate = (req, res) => {
+    productsService.actualizar(req.params.id, req.body);
+
+    res.status(200).json({
+        message: "Producto actualizado"
+    });
+};
+
+// API - Eliminar un producto
+const apiDelete = (req, res) => {
+    productsService.eliminar(req.params.id);
+
+    res.status(200).json({
+        message: "Producto eliminado"
+    });
+};
+
 
 module.exports = {
     home,
@@ -181,5 +229,11 @@ module.exports = {
     remove,
     error,
     processRegister,
-    orderByPrice
+    orderByPrice,
+    // API
+    apiGetAll,
+    apiGetById,
+    apiCreate,
+    apiUpdate,
+    apiDelete
 };

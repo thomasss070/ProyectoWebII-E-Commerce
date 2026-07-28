@@ -7,6 +7,7 @@ require("./src/db/database");
 const app = express();
 
 const productRoutes = require('./src/routes/productRoute');
+const apiProductRoutes = require('./src/routes/api/apiProductRoute');
 
 // 1. VIEW ENGINE (PRIMERO SIEMPRE)
 app.set('views', path.join(__dirname, 'src/views'));
@@ -51,6 +52,7 @@ app.use((req, res, next) => {
 
 
 app.use("/", productRoutes);
+app.use("/api/products", apiProductRoutes);
 
 
 
