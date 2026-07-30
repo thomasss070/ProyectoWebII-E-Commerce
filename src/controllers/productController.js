@@ -11,6 +11,7 @@ const home = (req, res) => {
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        pageCss: "index"
     });
 };
 
@@ -25,6 +26,7 @@ const search = (req, res) => {
     res.render("layouts/main", {
         body: "../pages/index",
         productos: resultados,
+        pageCss: "index"
     });
 };
 
@@ -37,6 +39,7 @@ const products = (req, res) => {
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        pageCss: "index"
     });
 };
 
@@ -55,7 +58,8 @@ const detail = (req, res) => {
             body: "../pages/error",
             status: 404,
             mensaje: "Producto no encontrado",
-            sugeridos
+            sugeridos,
+            pageCss: "error"
         });
     }
 
@@ -64,7 +68,8 @@ const detail = (req, res) => {
     res.render("layouts/main", {
         body: "../pages/products",
         producto,
-        relacionados
+        relacionados,
+        pageCss: "products"
     });
 };
 
@@ -84,7 +89,8 @@ const cart = (req, res) => {
 
     res.render("layouts/main", {
         body: "../pages/cart",
-        cart: cartProducts
+        cart: cartProducts,
+        pageCss: "cart"
     });
 };
 
@@ -120,18 +126,19 @@ const remove = (req, res) => {
 const checkout = (req, res) => {
 
     res.render("layouts/main", {
-        body: "../pages/checkout"
+        body: "../pages/checkout",
+        pageCss: "checkout"
     });
 };
 
 
 // login y register
 const login = (req, res) => {
-    res.render("pages/login");
+    res.render("pages/login", { pageCss: "auth" });
 };
 
 const register = (req, res) => {
-    res.render("pages/register");
+    res.render("pages/register", { pageCss: "auth" });
 };
 
 const processRegister = (req, res) => {
@@ -148,7 +155,8 @@ const error = (req, res) => {
     res.status(404).render("layouts/main", {
         body: "../pages/error",
         mensaje: "Página no encontrada",
-        sugeridos
+        sugeridos,
+        pageCss: "error"
     });
 };
 
@@ -161,7 +169,8 @@ const orderByPrice = (req, res) => {
 
     res.render("layouts/main", {
         body: "../pages/index",
-        productos
+        productos,
+        pageCss: "index"
     });
 };
 

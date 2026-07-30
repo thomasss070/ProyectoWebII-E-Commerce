@@ -1,7 +1,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Css/Estilos.css">
+    <link rel="stylesheet" href="/Css/main.css">
+    <% if (typeof pageCss !== 'undefined' && pageCss) { %>
+        <link rel="stylesheet" href="/Css/<%= pageCss %>.css">
+    <% } %>
 </head>
 
 <header class="container-header">

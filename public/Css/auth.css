@@ -1,0 +1,67 @@
+@import url("main.css");
+
+.login-header {
+    background: #e8e8e8;
+    padding: 16px 24px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #111;
+}
+
+.logo-login {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+}
+
+.login-container {
+    max-width: 360px;
+    margin: 48px auto;
+    padding: 32px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.login-title {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.login-input {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.login-button {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    cursor: pointer;
+}
+
+.login-link {
+    display: block;
+    margin-top: 10px;
+    color: #0071e3;
+}
+
+.error-text {
+    color: #c0392b;
+    font-size: 14px;
+    margin-top: 8px;
+}
