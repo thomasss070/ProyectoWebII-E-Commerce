@@ -19,6 +19,26 @@ if (!hasStock) {
     db.exec(`ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0`);
 }
 
+// Asegurar que la tabla categories tenga las categorías usadas en products
+const categories = db.prepare(`
+    SELECT DISTINCT categoria
+    FROM products
+    WHERE categoria IS NOT NULL AND categoria != ''
+`).all();
+
+const insertCategory = db.prepare(`
+    INSERT OR IGNORE INTO categories (nombre)
+    VALUES (?)
+`);
+
+const seedCategories = db.transaction((list) => {
+    for (const item of list) {
+        insertCategory.run(item.categoria);
+    }
+});
+
+seedCategories(categories);
+
 console.log("Base de datos inicializada ✔");
 
 module.exports = db;

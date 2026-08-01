@@ -4,11 +4,18 @@ CREATE TABLE IF NOT EXISTS products (
     precio REAL NOT NULL,
     imagen TEXT,
     descripcion TEXT,
-    categoria TEXT,
+    categorias TEXT,
     flag TEXT,
     stock INTEGER DEFAULT 0,
     especificaciones TEXT
 );
+
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL UNIQUE
+);
+
+
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

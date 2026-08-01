@@ -1,6 +1,7 @@
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/Css/Estilos.css">
+    <link rel="stylesheet" href="/Css/main.css">
+    <link rel="stylesheet" href="/Css/index.css">
 </head>
 
   <div class="container">
@@ -30,21 +31,49 @@
     </button>
 
 </form>
+<!-- mas vendidos-->
+ <h3 class="mas-vendidos-titulo">Más vendidos</h3> 
 
-    <h3 class="mas-vendidos-titulo">Mas vendidos</h3> 
-      <div class="mas-vendidos">
-     
-    
+<div class="carrusel-wrapper">
+  <!-- Botón Izquierda -->
+  <button class="carrusel-btn prev" id="btn-prev" aria-label="Anterior">&#10094;</button>
+
+  <div class="mas-vendidos" id="carrusel-productos">
     <% productos.filter(p => p.flag === "true").forEach(p => { %>
-        <a href="/products/<%= p.id %>">
-          <img src="<%= p.imagen %>" alt="<%= p.nombre %>" class="mas-vendidos-img">
-            <p><%= p.nombre %></p>
-            <p><%= p.precio.toLocaleString() %></p>
-          <p>Ver mas</p>
-        </a>
-        <% }) %>
-      </div>
-    
+      <a href="/products/<%= p.id %>" class="producto-card">
+        <img 
+          src="<%= p.imagen || '/images/default-placeholder.png' %>" 
+          alt="<%= p.nombre %>" 
+          class="mas-vendidos-img"
+          onerror="this.src='/images/default-placeholder.png'"
+        >
+        <p class="producto-nombre"><%= p.nombre %></p>
+        <p class="producto-precio">$<%= p.precio.toLocaleString() %></p>
+        <span class="ver-mas">Ver más</span>
+      </a>
+    <% }) %>
+  </div>
+
+  <!-- Botón Derecha -->
+  <button class="carrusel-btn next" id="btn-next" aria-label="Siguiente">&#10095;</button>
+</div>
+
+<script>
+  const carrusel = document.getElementById('carrusel-productos');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+
+  // Distancia a desplazar al hacer clic (el ancho del contenedor)
+  const scrollAmount = () => carrusel.clientWidth;
+
+  btnNext.addEventListener('click', () => {
+    carrusel.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+  });
+
+  btnPrev.addEventListener('click', () => {
+    carrusel.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+  });
+</script>
 
 
 

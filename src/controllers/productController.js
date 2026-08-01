@@ -1,4 +1,4 @@
-const productsService = require("../services/productsServices");
+const productsServices = require("../services/productsServices");
 const cartService = require("../services/cartService");
 const { parse } = require("uuid");
 const normalizeId = require("../utils/normalizeId");
@@ -6,11 +6,12 @@ const normalizeId = require("../utils/normalizeId");
 // home
 const home = (req, res) => {
 
-    const productos = productsService.obtenerTodos();
+    const productos = productsServices.obtenerTodos();
 
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        pageCss: "index"
     });
 };
 
@@ -20,11 +21,12 @@ const search = (req, res) => {
 
     const query = req.query.q;
 
-    const resultados = productsService.buscar(query);
+    const resultados = productsServices.buscar(query);
 
     res.render("layouts/main", {
         body: "../pages/index",
         productos: resultados,
+        pageCss: "index"
     });
 };
 
@@ -32,11 +34,12 @@ const search = (req, res) => {
 // listado de productos
 const products = (req, res) => {
 
-    const productos = productsService.obtenerTodos();
+    const productos = productsServices.obtenerTodos();
 
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        pageCss: "index"
     });
 };
 
@@ -44,27 +47,29 @@ const products = (req, res) => {
 // detalle de producto
 const detail = (req, res) => {
 
-    const producto = productsService.obtenerPorId(req.params.id);
+    const producto = productsServices.obtenerPorId(req.params.id);
 
     //  404 
     if (!producto) {
 
-        const sugeridos = productsService.obtenerTodos().slice(0, 3);
+        const sugeridos = productsServices.obtenerTodos().slice(0, 3);
 
         return res.status(404).render("layouts/main", {
             body: "../pages/error",
             status: 404,
             mensaje: "Producto no encontrado",
-            sugeridos
+            sugeridos,
+            pageCss: "error"
         });
     }
 
-    const relacionados = productsService.obtenerTodos().slice(0, 3);
+    const relacionados = productsServices.obtenerTodos().slice(0, 3);
 
     res.render("layouts/main", {
         body: "../pages/products",
         producto,
-        relacionados
+        relacionados,
+        pageCss: "products"
     });
 };
 
@@ -84,7 +89,8 @@ const cart = (req, res) => {
 
     res.render("layouts/main", {
         body: "../pages/cart",
-        cart: cartProducts
+        cart: cartProducts,
+        pageCss: "cart"
     });
 };
 
@@ -120,18 +126,19 @@ const remove = (req, res) => {
 const checkout = (req, res) => {
 
     res.render("layouts/main", {
-        body: "../pages/checkout"
+        body: "../pages/checkout",
+        pageCss: "checkout"
     });
 };
 
 
 // login y register
 const login = (req, res) => {
-    res.render("pages/login");
+    res.render("pages/login", { pageCss: "auth" });
 };
 
 const register = (req, res) => {
-    res.render("pages/register");
+    res.render("pages/register", { pageCss: "auth" });
 };
 
 const processRegister = (req, res) => {
@@ -143,12 +150,13 @@ const processRegister = (req, res) => {
 // error
 const error = (req, res) => {
 
-    const sugeridos = productsService.obtenerTodos().slice(0, 2);
+    const sugeridos = productsServices.obtenerTodos().slice(0, 2);
 
     res.status(404).render("layouts/main", {
         body: "../pages/error",
         mensaje: "Página no encontrada",
-        sugeridos
+        sugeridos,
+        pageCss: "error"
     });
 };
 
@@ -157,14 +165,89 @@ const orderByPrice = (req, res) => {
     const orden = req.query.orden;
 
     const productos =
-        productsService.ordenarPorPrecio(orden);
+        productsServices.ordenarPorPrecio(orden);
 
     res.render("layouts/main", {
         body: "../pages/index",
-        productos
+        productos,
+        pageCss: "index"
     });
 };
 
+// API - Obtener todos los productos
+const apiGetAll = (req, res) => {
+    const productos = productsServices.obtenerTodos();
+
+    res.status(200).json(productos);
+};
+
+// API - Obtener un producto por ID
+const apiGetById = (req, res) => {
+    const producto = productsServices.obtenerPorId(req.params.id);
+
+    if (!producto) {
+        return res.status(404).json({
+            error: "Producto no encontrado"
+        });
+    }
+
+    res.status(200).json(producto);
+};
+
+// API - Crear un producto
+const apiCreate = (req, res) => {
+    const id = productsServices.crear(req.body);
+
+    res.status(201).json({
+        message: "Producto creado",
+        id
+    });
+};
+
+// API - Actualizar un producto
+const apiUpdate = (req, res) => {
+    // 1. Convertimos el ID si tu BD usa números (o usamos normalizeId si usás UUIDs)
+    const id = !isNaN(req.params.id) ? Number(req.params.id) : req.params.id;
+
+    // 2. Mapeamos las propiedades por si React manda en inglés y tu servicio espera español
+    const dataToUpdate = {
+        nombre: req.body.name || req.body.nombre,
+        precio: req.body.price !== undefined ? Number(req.body.price) : req.body.precio,
+        stock: req.body.stock !== undefined ? Number(req.body.stock) : undefined,
+        descripcion: req.body.description || req.body.descripcion,
+        store: req.body.store
+    };
+
+    const result = productsServices.actualizar(id, dataToUpdate);
+
+    // 3. Verificamos respuesta
+    if (!result || result.changes === 0) {
+        return res.status(404).json({
+            error: "Producto no encontrado o sin cambios que aplicar"
+        });
+    }
+
+    res.status(200).json({
+        message: "Producto actualizado"
+    });
+};
+
+// API - Eliminar un producto
+const apiDelete = (req, res) => {
+    const id = !isNaN(req.params.id) ? Number(req.params.id) : req.params.id;
+
+    const result = productsServices.eliminar(id);
+
+    if (!result || result.changes === 0) {
+        return res.status(404).json({
+            error: "Producto no encontrado"
+        });
+    }
+
+    res.status(200).json({
+        message: "Producto eliminado"
+    });
+};
 
 module.exports = {
     home,
@@ -181,5 +264,10 @@ module.exports = {
     remove,
     error,
     processRegister,
-    orderByPrice
+    orderByPrice,
+    apiGetAll,
+    apiGetById,
+    apiCreate,
+    apiUpdate,
+    apiDelete
 };
