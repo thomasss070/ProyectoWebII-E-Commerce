@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     gap: 12px;
     margin: 20px auto;
-    background-color: #141414;
+    background-color: #d5d5d5;
     width: 100%; /* Cambiado para asegurar que use el ancho disponible */
     max-width: 720px;
     border-radius: 25px;
@@ -15,7 +15,7 @@
 }
 
 .categorias a {
-    color: #fff;
+    color: #716f6f;
     text-decoration: none;
     font-size: 16px;
     padding: 6px 10px;
@@ -25,7 +25,8 @@
 }
 
 .categorias a:hover {
-    background-color: #333;
+    background-color: #c0c0c0;
+    color: #111;
 }
 
 .form-orden {
@@ -33,19 +34,20 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    margin: 24px 0;
+    margin: 20px 0;
 }
 
 .form-orden select,
 .form-orden button {
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    margin-top: 5%;
     border: 1px solid #d0d0d0;
 }
 
 .form-orden button {
-    background: #111;
-    color: #fff;
+    background: #d5d5d5;
+    color: #716f6f;
     cursor: pointer;
 }
 
@@ -87,45 +89,123 @@
 
 .mas-vendidos-titulo {
     text-align: center;
-    font-size: 28px;
-    margin: 32px 0 16px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 36px 0 18px;
+    color: #1d1d1f;
+    letter-spacing: -0.02em;
 }
 
+/* =======================================================
+   NUEVO: ESTRUCTURA DEL CARRUSEL DE MÁS VENDIDOS
+======================================================= */
+
+/* Contenedor que sostiene la tira de produ ctos y las flechas */
+.carrusel-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* Reemplazamos grid por flex + scroll horizontal */
 .mas-vendidos {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 12px;
-    background-color: lightgray;
-    border-radius: 16px;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 20px 10px;
+    background: linear-gradient(135deg, #f7f7f7 0%, #ececec 100%);
+    border-radius: 24px;
+    
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    width: 100%;
+    scrollbar-width: none; /* Oculta scrollbar en Firefox */
 }
 
+.mas-vendidos::-webkit-scrollbar {
+    display: none; /* Oculta scrollbar en Chrome/Safari */
+}
+
+/* Ajustamos las tarjetas individuales para que muestren 4 a la vez */
 .mas-vendidos a {
-    width: 100%;
-    max-width: 120px;
-    min-width: 70px;
+    flex: 0 0 calc(25% - 12px); /* Muestra 4 productos. Para 3 usa: calc(33.333% - 11px) */
+    scroll-snap-align: start;
+    box-sizing: border-box;
     background: #fff;
-    border-radius: 12px;
-    padding: 8px;
+    border-radius: 18px;
+    padding: 14px 10px;
     text-align: center;
     color: #111;
     text-decoration: none;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(197, 53, 53, 0.04);
 }
 
 .mas-vendidos a:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
 .mas-vendidos img {
     width: 100%;
-    height: clamp(46px, 6vw, 88px);
+    height: 120px;
     object-fit: contain;
-    margin-bottom: 6px;
-    border-radius: 10%;
+    margin-bottom: 8px;
+    border-radius: 14px;
+
+    background: #fafafa;
+    padding: 6px;
 }
+
+.mas-vendidos p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+}
+
+.mas-vendidos p:last-child {
+    color: #0071e3;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+/* Botones de las Flechas */
+.carrusel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.carrusel-btn:hover {
+    background: #333;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.carrusel-btn.prev { left: -10px; }
+.carrusel-btn.next { right: -10px; }
+
+/* Adaptación para celulares */
+@media (max-width: 768px) {
+    .mas-vendidos a {
+        flex: 0 0 calc(50% - 8px); /* En móviles muestra 2 productos */
+    }
+}
+
+/* ======================================================= */
 
 .Interes-container {
     max-width: 1200px;
