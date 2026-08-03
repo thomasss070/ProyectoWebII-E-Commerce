@@ -205,22 +205,14 @@ const apiCreate = (req, res) => {
 };
 
 // API - Actualizar un producto
+// API - Actualizar un producto
+// API - Actualizar un producto
 const apiUpdate = (req, res) => {
-    // 1. Convertimos el ID si tu BD usa números (o usamos normalizeId si usás UUIDs)
-    const id = !isNaN(req.params.id) ? Number(req.params.id) : req.params.id;
+    const id = req.params.id;
 
-    // 2. Mapeamos las propiedades por si React manda en inglés y tu servicio espera español
-    const dataToUpdate = {
-        nombre: req.body.name || req.body.nombre,
-        precio: req.body.price !== undefined ? Number(req.body.price) : req.body.precio,
-        stock: req.body.stock !== undefined ? Number(req.body.stock) : undefined,
-        descripcion: req.body.description || req.body.descripcion,
-        store: req.body.store
-    };
+    // Pasamos el cuerpo de la solicitud tal cual al servicio
+    const result = productsServices.actualizar(id, req.body);
 
-    const result = productsServices.actualizar(id, dataToUpdate);
-
-    // 3. Verificamos respuesta
     if (!result || result.changes === 0) {
         return res.status(404).json({
             error: "Producto no encontrado o sin cambios que aplicar"
@@ -228,7 +220,7 @@ const apiUpdate = (req, res) => {
     }
 
     res.status(200).json({
-        message: "Producto actualizado"
+        message: "Producto actualizado con éxito"
     });
 };
 
