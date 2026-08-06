@@ -35,7 +35,6 @@ const search = (req, res) => {
 const products = (req, res) => {
 
     const productos = productsServices.obtenerTodos();
-
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
@@ -134,11 +133,17 @@ const checkout = (req, res) => {
 
 // login y register
 const login = (req, res) => {
-    res.render("pages/login", { pageCss: "auth" });
+    res.render("layouts/main", {
+        body: "../pages/login",
+        pageCss: "auth"
+    });
 };
 
 const register = (req, res) => {
-    res.render("pages/register", { pageCss: "auth" });
+    res.render("layouts/main", {
+        body: "../pages/register",
+        pageCss: "auth"
+    });
 };
 
 const processRegister = (req, res) => {

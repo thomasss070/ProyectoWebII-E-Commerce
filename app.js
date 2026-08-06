@@ -11,9 +11,12 @@ const expressLayouts = require('express-ejs-layouts');
 require('./src/db/database');
 
 // Rutas de la aplicación
+const homeRoutes = require('./src/routes/homeRoute');
+const authRoutes = require('./src/routes/authRoute');
 const productRoutes = require('./src/routes/productRoute');
+const cartRoutes = require('./src/routes/cartRoute');
 const apiProductRoutes = require('./src/routes/api/apiProductRoute');
-const categoryRoutes = require('./src/routes/api/categoryRoute');
+const categoryRoutes = require('./src/routes/categoryRoute');
 const apiStatsRoute = require('./src/routes/api/apiStatsRoute');
 const testApiRoutes = require('./src/routes/api/testApiRoutes');
 
@@ -73,7 +76,10 @@ app.use((req, res, next) => {
 app.use('/api', testApiRoutes);
 
 // Rutas Principales de la Web
+app.use('/', homeRoutes);
+app.use('/', authRoutes);
 app.use('/', productRoutes);
+app.use('/', cartRoutes);
 
 // Rutas API REST
 app.use('/api/products', apiProductRoutes);
