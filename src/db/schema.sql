@@ -4,15 +4,17 @@ CREATE TABLE IF NOT EXISTS products (
     precio REAL NOT NULL,
     imagen TEXT,
     descripcion TEXT,
-    categorias TEXT,
+    categoria_id INTEGER,
     flag TEXT,
     stock INTEGER DEFAULT 0,
-    especificaciones TEXT
+    especificaciones TEXT,
+    FOREIGN KEY (categoria_id) REFERENCES categories(id)
 );
 
 CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT NOT NULL UNIQUE
+    nombre TEXT NOT NULL UNIQUE,
+    descripcion TEXT
 );
 
 
@@ -33,4 +35,3 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER PRIMARY KEY
 );
-

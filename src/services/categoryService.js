@@ -11,22 +11,28 @@ module.exports = {
     },
 
     create(data) {
+        const nombre = data.nombre ?? data.name ?? null;
+        const descripcion = data.descripcion ?? data.description ?? null;
+
         const stmt = db.prepare(`
-            INSERT INTO categories (nombre)
-            VALUES (?)si
+            INSERT INTO categories (nombre, descripcion)
+            VALUES (?, ?)
         `);
 
-        const result = stmt.run(data.name);
+        const result = stmt.run(nombre, descripcion);
 
         return this.findById(result.lastInsertRowid);
     },
 
     update(id, data) {
+        const nombre = data.nombre ?? data.name ?? null;
+        const descripcion = data.descripcion ?? data.description ?? null;
+
         db.prepare(`
             UPDATE categories
-            SET nombre = ?
+            SET nombre = ?, descripcion = ?
             WHERE id = ?
-        `).run(data.name, id);
+        `).run(nombre, descripcion, id);
 
         return this.findById(id);
     },

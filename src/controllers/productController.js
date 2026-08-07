@@ -5,52 +5,49 @@ const normalizeId = require("../utils/normalizeId");
 
 // home
 const home = (req, res) => {
-
     const productos = productsServices.obtenerTodos();
+    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        categorias,
         pageCss: "index"
     });
 };
 
-
 // buscar
 const search = (req, res) => {
-
     const query = req.query.q;
-
     const resultados = productsServices.buscar(query);
+    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
         productos: resultados,
+        categorias,
         pageCss: "index"
     });
 };
-
 
 // listado de productos
 const products = (req, res) => {
-
     const productos = productsServices.obtenerTodos();
+    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
+
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        categorias,
         pageCss: "index"
     });
 };
 
-
 // detalle de producto
 const detail = (req, res) => {
-
     const producto = productsServices.obtenerPorId(req.params.id);
 
-    //  404 
     if (!producto) {
-
         const sugeridos = productsServices.obtenerTodos().slice(0, 3);
 
         return res.status(404).render("layouts/main", {
@@ -74,16 +71,12 @@ const detail = (req, res) => {
 
 // carrito
 const addCart = (req, res) => {
-
     const id = parseInt(req.params.id);
-
     cartService.agregarProducto(req.session.cart, id);
-
     res.redirect("/cart");
 };
 
 const cart = (req, res) => {
-
     const cartProducts = cartService.obtenerCarrito(req.session.cart);
 
     res.render("layouts/main", {
@@ -94,42 +87,30 @@ const cart = (req, res) => {
 };
 
 const increase = (req, res) => {
-
     const id = parseInt(req.body.id);
-
     cartService.aumentarCantidad(req.session.cart, id);
-
     res.redirect("/cart");
 };
 
 const decrease = (req, res) => {
-
     const id = parseInt(req.body.id);
-
     cartService.disminuirCantidad(req.session.cart, id);
-
     res.redirect("/cart");
 };
 
 const remove = (req, res) => {
-
     const id = parseInt(req.body.id);
-
     req.session.cart = cartService.remove(req.session.cart, id);
-
     res.redirect("/cart");
 };
 
-
 // checkout
 const checkout = (req, res) => {
-
     res.render("layouts/main", {
         body: "../pages/checkout",
         pageCss: "checkout"
     });
 };
-
 
 // login y register
 const login = (req, res) => {
@@ -151,10 +132,8 @@ const processRegister = (req, res) => {
     res.redirect("/login");
 };
 
-
 // error
 const error = (req, res) => {
-
     const sugeridos = productsServices.obtenerTodos().slice(0, 2);
 
     res.status(404).render("layouts/main", {
@@ -166,24 +145,39 @@ const error = (req, res) => {
 };
 
 const orderByPrice = (req, res) => {
-
     const orden = req.query.orden;
-
-    const productos =
-        productsServices.ordenarPorPrecio(orden);
+    const productos = productsServices.ordenarPorPrecio(orden);
+    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
         productos,
+        categorias,
         pageCss: "index"
     });
 };
 
 // API - Obtener todos los productos
+// API - Obtener todos los productos (con soporte para filtro por categoría)
+// API - Obtener todos los productos
 const apiGetAll = (req, res) => {
-    const productos = productsServices.obtenerTodos();
+    try {
+        const rawCat = req.query.categoria_id ?? req.query.category_id;
+        
+        if (rawCat !== undefined && rawCat !== null && rawCat !== '') {
+            // Convierte "1" o "1.0" a un número entero (1)
+            const categoriaId = parseInt(rawCat, 10);
+            
+            const productos = productsServices.obtenerPorCategoria(categoriaId);
+            return res.status(200).json(productos);
+        }
 
-    res.status(200).json(productos);
+        const todosLosProductos = productsServices.obtenerTodos();
+        res.status(200).json(todosLosProductos);
+    } catch (error) {
+        console.error("Error exacto en apiGetAll:", error);
+        res.status(500).json({ error: "Error al obtener los productos" });
+    }
 };
 
 // API - Obtener un producto por ID
@@ -201,49 +195,102 @@ const apiGetById = (req, res) => {
 
 // API - Crear un producto
 const apiCreate = (req, res) => {
-    const id = productsServices.crear(req.body);
+    try {
+        const rawCat = req.body.categoria_id ?? req.body.category_id ?? req.body.categoriaId ?? req.body.categoryId ?? req.body.categoria;
+        const cleanCategoryId = rawCat !== undefined && rawCat !== null && rawCat !== "" ? parseInt(rawCat, 10) : null;
 
-    res.status(201).json({
-        message: "Producto creado",
-        id
-    });
+        const datosACrear = {
+            ...req.body,
+            categoria_id: cleanCategoryId,
+            category_id: cleanCategoryId
+        };
+
+        const id = productsServices.crear(datosACrear);
+
+        res.status(201).json({
+            message: "Producto creado",
+            id
+        });
+    } catch (error) {
+        console.error("Error en apiCreate:", error);
+        res.status(500).json({
+            error: "Error interno al crear el producto: " + error.message
+        });
+    }
 };
 
 // API - Actualizar un producto
-// API - Actualizar un producto
-// API - Actualizar un producto
 const apiUpdate = (req, res) => {
-    const id = req.params.id;
+    try {
+        const id = req.params.id;
 
-    // Pasamos el cuerpo de la solicitud tal cual al servicio
-    const result = productsServices.actualizar(id, req.body);
+        // 1. Verificar si el producto existe
+        const productoExistente = productsServices.obtenerPorId(id);
+        if (!productoExistente) {
+            return res.status(404).json({
+                error: "Producto no encontrado"
+            });
+        }
 
-    if (!result || result.changes === 0) {
-        return res.status(404).json({
-            error: "Producto no encontrado o sin cambios que aplicar"
+        // 2. Extraer el ID de categoría ingresado de cualquier propiedad posible
+        const rawCat = req.body.categoria_id ?? req.body.category_id ?? req.body.categoriaId ?? req.body.categoryId ?? req.body.categoria;
+        
+        // Convertir a número entero puro (remueve decimales como "999.0" y cadenas de texto)
+        const cleanCategoryId = rawCat !== undefined && rawCat !== null && rawCat !== "" ? parseInt(rawCat, 10) : null;
+
+        // 3. Crear el objeto normalizado
+        const datosAActualizar = {
+            ...req.body,
+            categoria_id: cleanCategoryId,
+            category_id: cleanCategoryId // Se envía en ambas nomenclaturas por compatibilidad
+        };
+
+        // 4. Ejecutar la actualización en SQLite
+        productsServices.actualizar(id, datosAActualizar);
+
+        res.status(200).json({
+            message: "Producto actualizado con éxito"
+        });
+    } catch (error) {
+        console.error("Error en apiUpdate:", error);
+        res.status(500).json({
+            error: "Error interno al actualizar el producto: " + error.message
         });
     }
-
-    res.status(200).json({
-        message: "Producto actualizado con éxito"
-    });
 };
 
 // API - Eliminar un producto
 const apiDelete = (req, res) => {
-    const id = !isNaN(req.params.id) ? Number(req.params.id) : req.params.id;
+    try {
+        const id = req.params.id;
+        const result = productsServices.eliminar(id);
 
-    const result = productsServices.eliminar(id);
+        // result.changes indica cuántas filas fueron afectadas en SQLite
+        if (!result || result.changes === 0) {
+            return res.status(404).json({
+                error: "Producto no encontrado o ya fue eliminado"
+            });
+        }
 
-    if (!result || result.changes === 0) {
-        return res.status(404).json({
-            error: "Producto no encontrado"
+        res.status(200).json({
+            message: "Producto eliminado con éxito"
+        });
+    } catch (error) {
+        console.error("Error en apiDelete:", error);
+        res.status(500).json({
+            error: "Error interno al eliminar el producto: " + error.message
         });
     }
+};
 
-    res.status(200).json({
-        message: "Producto eliminado"
-    });
+// API - Obtener todas las categorías
+const apiGetCategories = (req, res) => {
+    try {
+        const categorias = productsServices.obtenerCategorias();
+        res.status(200).json(categorias);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener categorías" });
+    }
 };
 
 module.exports = {
@@ -266,5 +313,6 @@ module.exports = {
     apiGetById,
     apiCreate,
     apiUpdate,
-    apiDelete
+    apiDelete,
+    apiGetCategories
 };

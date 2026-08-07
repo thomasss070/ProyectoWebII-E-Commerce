@@ -20,11 +20,17 @@ if (!hasStock) {
 }
 
 // Asegurar que la tabla categories tenga las categorías usadas en products
-const categories = db.prepare(`
-    SELECT DISTINCT categoria
-    FROM products
-    WHERE categoria IS NOT NULL AND categoria != ''
-`).all();
+const productColumns = db.prepare(`PRAGMA table_info(products)`).all();
+const hasCategoryColumn = productColumns.some(column => column.name === "categoria");
+
+const categories = hasCategoryColumn
+    ? db.prepare(`
+        SELECT DISTINCT categoria
+        FROM products
+        WHERE categoria IS NOT NULL
+          AND TRIM(categoria) != ''
+    `).all()
+    : [];
 
 const insertCategory = db.prepare(`
     INSERT OR IGNORE INTO categories (nombre)
@@ -33,7 +39,9 @@ const insertCategory = db.prepare(`
 
 const seedCategories = db.transaction((list) => {
     for (const item of list) {
-        insertCategory.run(item.categoria);
+        if (item.categoria && item.categoria.trim() !== '') {
+            insertCategory.run(item.categoria.trim());
+        }
     }
 });
 

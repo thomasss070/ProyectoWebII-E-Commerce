@@ -4,161 +4,100 @@
     <link rel="stylesheet" href="/Css/index.css">
 </head>
 
-  <div class="container">
+<div class="container">
     
-    <div class = "categorias">
-        <a href="#Iphone">Categoria "iPhone"</a>
-        <a href="#iPad">Categoria "iPad"</a>
-        <a href="#MacBook">Categoria "MacBook"</a>
+    <!-- CAMBIO 1: Navegación de categorías dinámica -->
+    <div class="categorias">
+        <% categorias.forEach(c => { %>
+            <a href="#cat-<%= c.id %>">Categoría "<%= c.nombre %>"</a>
+        <% }) %>
     </div>
 
     <form action="/products/order" method="GET" class="form-orden">
+        <select name="orden">
+            <option value="asc">Precio: menor a mayor</option>
+            <option value="desc">Precio: mayor a menor</option>
+        </select>
+        <button type="submit">Ordenar</button>
+    </form>
 
-    <select name="orden">
+    <!-- MÁS VENDIDOS (Se mantiene igual) -->
+    <h3 class="mas-vendidos-titulo">Más vendidos</h3> 
 
-        <option value="asc">
-            Precio: menor a mayor
-        </option>
+    <div class="carrusel-wrapper">
+        <button class="carrusel-btn prev" id="btn-prev" aria-label="Anterior">&#10094;</button>
 
-        <option value="desc">
-            Precio: mayor a menor
-        </option>
+        <div class="mas-vendidos" id="carrusel-productos">
+            <% productos.filter(p => p.flag === "true").forEach(p => { %>
+                <a href="/products/<%= p.id %>" class="producto-card">
+                    <img 
+                        src="<%= p.imagen || '/images/default-placeholder.png' %>" 
+                        alt="<%= p.nombre %>" 
+                        class="mas-vendidos-img"
+                        onerror="this.src='/images/default-placeholder.png'"
+                    >
+                    <p class="producto-nombre"><%= p.nombre %></p>
+                    <p class="producto-precio">$<%= p.precio.toLocaleString() %></p>
+                    <span class="ver-mas">Ver más</span>
+                </a>
+            <% }) %>
+        </div>
 
-    </select>
+        <button class="carrusel-btn next" id="btn-next" aria-label="Siguiente">&#10095;</button>
+    </div>
 
-    <button type="submit">
-        Ordenar
-    </button>
+    <script>
+        const carrusel = document.getElementById('carrusel-productos');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
 
-</form>
-<!-- mas vendidos-->
- <h3 class="mas-vendidos-titulo">Más vendidos</h3> 
+        const scrollAmount = () => carrusel.clientWidth;
 
-<div class="carrusel-wrapper">
-  <!-- Botón Izquierda -->
-  <button class="carrusel-btn prev" id="btn-prev" aria-label="Anterior">&#10094;</button>
+        btnNext.addEventListener('click', () => {
+            carrusel.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
+        });
 
-  <div class="mas-vendidos" id="carrusel-productos">
-    <% productos.filter(p => p.flag === "true").forEach(p => { %>
-      <a href="/products/<%= p.id %>" class="producto-card">
-        <img 
-          src="<%= p.imagen || '/images/default-placeholder.png' %>" 
-          alt="<%= p.nombre %>" 
-          class="mas-vendidos-img"
-          onerror="this.src='/images/default-placeholder.png'"
-        >
-        <p class="producto-nombre"><%= p.nombre %></p>
-        <p class="producto-precio">$<%= p.precio.toLocaleString() %></p>
-        <span class="ver-mas">Ver más</span>
-      </a>
-    <% }) %>
-  </div>
+        btnPrev.addEventListener('click', () => {
+            carrusel.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+        });
+    </script>
 
-  <!-- Botón Derecha -->
-  <button class="carrusel-btn next" id="btn-next" aria-label="Siguiente">&#10095;</button>
+    <!-- CAMBIO 2: Renderizado dinámico de Secciones y Productos por Categoría -->
+    <!-- Recorremos cada categoría traída de la base de datos -->
+<% categorias.forEach(cat => { %>
+    <h2 class="categoria-titulo"><%= cat.nombre %></h2>
+
+    <ul class="productos" id="cat-<%= cat.id %>">
+        <!-- 💡 Usamos == para evitar que falle por diferencias de tipo (String vs Number) -->
+        <% productos.filter(p => Number(p.categoria_id) === Number(cat.id)).forEach(p => { %>
+            <li>
+                <a href="/products/<%= p.id %>">
+                    <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
+                    <p><%= p.nombre %></p>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+<% }) %>
+
 </div>
 
-<script>
-  const carrusel = document.getElementById('carrusel-productos');
-  const btnPrev = document.getElementById('btn-prev');
-  const btnNext = document.getElementById('btn-next');
-
-  // Distancia a desplazar al hacer clic (el ancho del contenedor)
-  const scrollAmount = () => carrusel.clientWidth;
-
-  btnNext.addEventListener('click', () => {
-    carrusel.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-  });
-
-  btnPrev.addEventListener('click', () => {
-    carrusel.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
-  });
-</script>
-
-
-
-    <h2 class="categoria-titulo">iPhone</h2>
-<ul class="productos" id="Iphone">
-  <% productos.filter(p => p.categoria === "iPhone").forEach(p => { %>
-    <li>
-      <a href="/products/<%= p.id %>">
-        <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
-        <p><%= p.nombre %></p>
-      </a>
-    </li>
-  <% }) %>
-</ul>
-
-
-
-<h2 class="categoria-titulo">iPad</h2>
-<ul class="productos" id="iPad">
-  <% productos.filter(p => p.categoria === "iPad").forEach(p => { %>
-    <li>
-      <a href="/products/<%= p.id %>">
-        <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
-        <p><%= p.nombre %></p>
-      </a>
-    </li>
-  <% }) %>
-</ul>
-
-
-
-<h2 class="categoria-titulo">MacBook</h2>
-
-<ul class="productos" id="MacBook">
-
-  <% productos.filter(p => p.categoria === "MacBook").forEach(p => { %>
-
-    <li>
-
-      <a href="<%= p.id === 12 ? '/error' : '/products/' + p.id %>">
-
-        <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
-
-        <p><%= p.nombre %></p>
-
-      </a>
-
-    </li>
-
-  <% }) %>
-
-</ul>
-
-  </div>
-
-  <div class="Interes-container">
-
+<!-- TAMBIÉN TE PUEDE INTERESAR (Se mantiene igual) -->
+<div class="Interes-container">
     <h2>También te puede interesar</h2>
-
     <ul class="productos">
-
-      <% [...productos]
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 5)
-    .forEach(p => { %>
-
-        <li>
-
-          <a href="/products/<%= p.id %>">
-
-            <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
-
-            <p><%= p.nombre %></p>
-
-            <p><%= p.precio.toLocaleString() %></p>
-
-            <p>Click para ver mas</p>
-
-          </a>
-
-        </li>
-
-      <% }) %>
-
+        <% [...productos]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5)
+            .forEach(p => { %>
+            <li>
+                <a href="/products/<%= p.id %>">
+                    <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
+                    <p><%= p.nombre %></p>
+                    <p>$<%= p.precio.toLocaleString() %></p>
+                    <p>Click para ver más</p>
+                </a>
+            </li>
+        <% }) %>
     </ul>
-
-  </div>
-
+</div>
