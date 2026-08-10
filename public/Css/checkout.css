@@ -1,9 +1,89 @@
 @import url("main.css");
+
+/* 📦 Contenedor principal estilo Tarjeta */
 .checkout-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 41%;
+    
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 40px 28px;
+    
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     text-align: center;
+}
+
+.checkout-container h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1d1d1f;
+    margin-bottom: 12px;
+}
+
+.checkout-container p {
+    font-size: 1rem;
+    color: #6e6e73;
+    margin-bottom: 28px;
+}
+
+/* 🔘 Contenedor Flex para separar los dos botones */
+.checkout-actions {
+    display: flex;
+    gap: 14px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Base común para ambos botones */
+.checkout-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+/* Botón Secundario (Inicio) */
+.checkout-actions .btn-secondary {
+     background-color: #ffffff;
+    color: black;
+    border: 1px solid #e5e5e7;
+}
+
+
+.checkout-actions .btn-secondary:hover {
+    background-color: #e8e8ed;
+    transform: translateY(-1px);
+}
+
+/* Botón Primario (Carrito) */
+.checkout-actions .btn-primary {
+    background-color: #ffffff;
+    color: black;
+    border: 1px solid #e5e5e7;
+}
+
+.checkout-actions .btn-primary:hover {
+    background-color: #e5e5e7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.25);
+}
+
+/* 📱 Responsivo: En celulares apila un botón sobre el otro */
+@media (max-width: 480px) {
+    .checkout-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

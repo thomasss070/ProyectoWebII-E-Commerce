@@ -37,7 +37,7 @@
                         onerror="this.src='/images/default-placeholder.png'"
                     >
                     <p class="producto-nombre"><%= p.nombre %></p>
-                    <p class="producto-precio">$<%= p.precio.toLocaleString() %></p>
+                    <p class="producto-precio"><%= p.precio.toLocaleString() %></p>
                     <span class="ver-mas">Ver más</span>
                 </a>
             <% }) %>
@@ -94,7 +94,7 @@
                 <a href="/products/<%= p.id %>">
                     <img src="<%= p.imagen %>" alt="<%= p.nombre %>">
                     <p><%= p.nombre %></p>
-                    <p>$<%= p.precio.toLocaleString() %></p>
+                    <p><%= p.precio.toLocaleString() %></p>
                     <p>Click para ver más</p>
                 </a>
             </li>

@@ -18,7 +18,8 @@ const cartRoutes = require('./src/routes/cartRoute');
 const apiProductRoutes = require('./src/routes/api/apiProductRoute');
 const categoryRoutes = require('./src/routes/categoryRoute');
 const apiStatsRoute = require('./src/routes/api/apiStatsRoute');
-const testApiRoutes = require('./src/routes/api/testApiRoutes');
+const apiProfileRoute = require("./src/routes/api/apiProfileRoute"); // Ajusta según tu ruta relativa
+
 
 // Inicialización de Express
 const app = express();
@@ -72,8 +73,6 @@ app.use((req, res, next) => {
 // ==========================================
 // 5. RUTAS DE LA APLICACIÓN
 // ==========================================
-// Rutas de Pruebas / API Base
-app.use('/api', testApiRoutes);
 
 // Rutas Principales de la Web
 app.use('/', homeRoutes);
@@ -82,6 +81,7 @@ app.use('/', productRoutes);
 app.use('/', cartRoutes);
 
 // Rutas API REST
+app.use("/api/users", apiProfileRoute);
 app.use('/api/products', apiProductRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/stats', apiStatsRoute);

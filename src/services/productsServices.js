@@ -90,20 +90,15 @@ function ordenarPorPrecio(orden = "asc") {
 }
 
 // Obtener relacionados 
-const obtenerRelacionados = (producto) => {
-    const productos = db.prepare(`
-        SELECT * FROM products
-        WHERE categoria_id = ?
-        AND id != ?
-        LIMIT 3
-    `).all(producto.categoria_id, producto.id);
-
-    return productos.map(p => ({
-        ...p,
-        especificaciones: p.especificaciones
-            ? JSON.parse(p.especificaciones)
-            : null
-    }));
+const getRelacionados = (categoryId, currentProductId) => {
+    // Busca los productos de la misma categoría excepto el actual
+    const query = db.prepare(`
+        SELECT * FROM products 
+        WHERE categoria_id = ? AND id != ? 
+        LIMIT 4
+    `);
+    
+    return query.all(categoryId, currentProductId);
 };
 
 // Obtener sugeridos aleatorios 
@@ -264,7 +259,7 @@ module.exports = {
     obtenerPorCategoria,
     buscar,
     ordenarPorPrecio,
-    obtenerRelacionados,
+    getRelacionados,
     obtenerSugeridos,
     crear,
     actualizar,

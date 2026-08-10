@@ -91,6 +91,7 @@
 
 .Relacionados {
     margin-top: 48px;
+    text-align: center; /* Centra el título h3 y los elementos en línea */
 }
 
 .Relacionados h3 {
@@ -106,6 +107,7 @@
     gap: 16px;
     list-style: none;
     padding: 0;
+    justify-content: center; /* 👈 Centra los elementos (li) horizontalmente en el contenedor */
 }
 
 .Relacionados li {
@@ -115,6 +117,11 @@
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    
+    /* Opcional: Centra la imagen y el texto dentro de cada tarjeta */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .Relacionados li:hover {
@@ -136,4 +143,6 @@
     margin-bottom: 10px;
     background: #fff;
     padding: 8px;
+    margin-left: auto;  /* 👈 Asegura el centrado horizontal de la imagen */
+    margin-right: auto;
 }

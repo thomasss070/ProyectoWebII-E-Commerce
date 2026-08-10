@@ -59,7 +59,9 @@ const detail = (req, res) => {
         });
     }
 
-    const relacionados = productsServices.obtenerTodos().slice(0, 3);
+    const relacionados = productsServices.getRelacionados
+        ? productsServices.getRelacionados(producto.categoria_id, producto.id)
+        : productsServices.obtenerTodos().filter((p) => p.id !== producto.id).slice(0, 3);
 
     res.render("layouts/main", {
         body: "../pages/products",
@@ -154,6 +156,28 @@ const orderByPrice = (req, res) => {
         productos,
         categorias,
         pageCss: "index"
+    });
+};
+
+const getProductDetail = (req, res) => {
+    const productId = req.params.id;
+    const product = productService.getById(productId);
+
+    if (!product) {
+        return res.status(404).send("Producto no encontrado");
+    }
+
+    // Obtener todos los productos
+    const todosLosProductos = productService.getAll();
+
+    // 🔴 Filtrar: Misma categoría Y diferente ID
+    const relacionados = todosLosProductos.filter(p => 
+        p.category_id === product.category_id && p.id != productId
+    );
+
+    res.render("productDetail", {
+        product,
+        relacionados
     });
 };
 

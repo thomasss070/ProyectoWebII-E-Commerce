@@ -83,27 +83,20 @@
 
     <!-- RELACIONADOS -->
     <div class="Relacionados">
+    <h3>Productos relacionados</h3>
 
-        <h3>Productos relacionados</h3>
-
-        <ul>
-
-            <% relacionados.forEach(p => { %>
-
-                <li>
-                    <a href="/products/<%= p.id %>">
-                        <img src="<%= p.imagen %>" class="Relacionados-Img" alt="<%= p.nombre %>">
-                        <h4 class="Relacionados-Nombre"><%= p.nombre %></h4>
-                        <p><%= p.precio.toLocaleString() %></p>
-
-                    </a>
-                </li>
-
-            <% }) %>
-
-        </ul>
-
-    </div>
+    <ul>
+        <% relacionados.forEach(p => { %>
+            <li>
+                <a href="/products/<%= p.id %>">
+                    <img src="<%= p.imagen %>" class="Relacionados-Img" alt="<%= p.nombre %>">
+                    <h4 class="Relacionados-Nombre"><%= p.nombre %></h4>
+                    <p>$<%= p.precio.toLocaleString() %></p>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
+</div>
 
 </div>
 
