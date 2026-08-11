@@ -84,7 +84,7 @@ a {
     border: none;
     border-radius: 0 999px 999px 0;
     background: #d5d5d5
-    cursor: pointer;
+    cursor pointer;
 }
 
 .Img-Lupa {
@@ -159,4 +159,34 @@ a {
     text-align: center;
     color: #666;
     font-size: 14px;
+}
+@media (max-width: 768px) {
+  /* Quita fondos y bordes del contenedor y botón */
+  .search,
+  .search button {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+  }
+
+  /* El input arranca achicado casi a cero */
+  .search input[type="text"] {
+    width: 0px;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    transition: width 0.3s ease, padding 0.3s ease; /* Hace la transición fluida */
+  }
+
+  /* Al tocar o hacer clic adentro del buscador, se expande para escribir */
+  .search input[type="text"]:focus,
+  .search:focus-within input[type="text"] {
+    width: 150px;
+    padding: 5px 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 }

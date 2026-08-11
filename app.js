@@ -89,16 +89,32 @@ app.use('/api/stats', apiStatsRoute);
 // ==========================================
 // 6. MANEJO DE ERRORES
 // ==========================================
-app.use((err, req, res, next) => {
-    console.error(err);
 
-    res.status(500).render('layouts/main', {
+// 1. CAPTURA RUTAS NO ENCONTRADAS (404)
+// Debe ir justo después de todas tus rutas normales y antes del manejador de errores
+app.use((req, res, next) => {
+    res.status(404).render('layouts/main', {
         body: '../pages/error',
-        status: 500,
-        mensaje: 'Error interno del servidor'
+        status: 404,
+        mensaje: 'Página no encontrada'
     });
 });
 
+// 2. MANEJADOR GLOBAL DE ERRORES DEL SERVIDOR (500 / 400)
+// Debe ir al final de todo y llevar exactamente los 4 parámetros (err, req, res, next)
+app.use((err, req, res, next) => {
+    console.error(err);
+
+    // Determina el código de estado (usa el del error o 500 por defecto)
+    const statusCode =  500;
+    const mensaje = err.message || 'Error interno del servidor';
+    
+    res.status(500).render('layouts/main', {
+        body: '../pages/error',
+        status: 500,
+        mensaje: mensaje
+    });
+});
 // ==========================================
 // 7. INICIALIZACIÓN DEL SERVIDOR
 // ==========================================

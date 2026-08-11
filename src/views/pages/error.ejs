@@ -1,3 +1,6 @@
+<% const statusCode = typeof status !== "undefined" ? status : (typeof locals.status !== "undefined" ? locals.status : "Error"); %>
+<% const mensajeTexto = typeof mensaje !== "undefined" ? mensaje : (typeof locals.mensaje !== "undefined" ? locals.mensaje : ""); %>
+
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/Css/main.css">
@@ -8,56 +11,24 @@
 
   <div class="error-container">
 
-    <h1><%= status || "Error" %></h1>
+    <h1><%= statusCode || "Error" %></h1>
 
-    <h2><%= mensaje %></h2>
+    <h2><%= mensajeTexto %></h2>
 
     <p>
-      <% if (status == 404) { %>
+      <% if (statusCode == 404) { %>
         Pero podés seguir explorando nuestros productos
-      <% } else if (status == 500) { %>
+      <% } else if (statusCode == 500) { %>
         Ocurrió un problema interno. Intentá más tarde.
       <% } else { %>
         Algo salió mal.
       <% } %>
     </p>
 
-    <input type="text" placeholder="Buscar productos..." class="search-bar">
+
 
     <a href="/" class="btn-inicio">
       Volver al inicio
     </a>
-
-   <% if (typeof sugeridos !== "undefined" && sugeridos.length > 0) { %>
-
-      <section class="sugeridos">
-
-        <h3>Los más elegidos</h3>
-
-        <div class="productos-container">
-
-          <% sugeridos.forEach(prod => { %>
-
-            <div class="producto">
-
-              <h4><%= prod.nombre %></h4>
-
-              <p>$<%= prod.precio %></p>
-
-              <a href="/products/<%= prod.id %>">
-                Ver producto
-              </a>
-
-            </div>
-
-          <% }) %>
-
-        </div>
-
-      </section>
-
-    <% } %>
-
-  </div>
 
 </div>
