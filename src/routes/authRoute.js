@@ -1,10 +1,16 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const controller = require("../controllers/productController");
+const authController = require('../controllers/authController');
 
-// login y register
-router.get("/login", controller.login);
-router.get("/register", controller.register);
-router.post("/register", controller.processRegister);
+// Vistas (GET)
+router.get('/login', authController.login);
+router.get('/register', authController.register);
+
+// Procesos (POST)
+router.post('/login', authController.processLogin);
+router.post('/register', authController.processRegister);
+
+// Cerrar sesión
+router.get('/logout', authController.logout);
 
 module.exports = router;

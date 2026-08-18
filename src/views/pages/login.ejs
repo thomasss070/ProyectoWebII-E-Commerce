@@ -9,50 +9,49 @@
 
 
 <div class="login-container">
-
     <h1 class="login-title">INICIAR SESIÓN</h1>
 
-    <form class="login-form">
+    <form class="login-form" id="loginForm">
+        <label class="login-label" for="email">Email:</label>
+        <input class="login-input" type="email" id="email" required>
 
-        <label class="login-label" for="email">
-            Email:
-        </label>
+        <label class="login-label" for="contrasena">Contraseña:</label>
+        <input class="login-input" type="password" id="contrasena" required>
 
-        <input
-            class="login-input"
-            type="email"
-            id="email"
-        >
-
-        <label class="login-label" for="contrasena">
-            Contraseña:
-        </label>
-
-        <input
-            class="login-input"
-            type="password"
-            id="contrasena"
-        >
-
-        <button class="login-button" type="submit">
-            Iniciar sesión
-        </button>
-
+        <button class="login-button" type="submit">Iniciar sesión</button>
     </form>
 
     <p class="login-links">
-
-        <a class="login-link" href="/register">
-            Si no tenés cuenta, registrate aquí
-        </a>
-
-        <br>
-
-        <a class="login-link" href="/">
-            OK
-        </a>
-
+        <a class="login-link" href="/register">Si no tenés cuenta, registrate aquí</a>
     </p>
-
 </div>
 
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('contrasena').value;
+
+  try {
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.user) {
+      // Guarda el nombre exactamente como viene de la tabla 'users'
+      localStorage.setItem('userName', data.user.name);
+      window.location.href = '/';
+    } else {
+      // Muestra "Usuario no encontrado" o "Contraseña incorrecta"
+      alert(data.error);
+    }
+  } catch (err) {
+    alert('Error al conectar con el servidor');
+  }
+});
+</script>

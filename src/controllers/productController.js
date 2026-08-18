@@ -257,16 +257,15 @@ const apiUpdate = (req, res) => {
         }
 
         // 2. Extraer el ID de categoría ingresado de cualquier propiedad posible
-        const rawCat = req.body.categoria_id ?? req.body.category_id ?? req.body.categoriaId ?? req.body.categoryId ?? req.body.categoria;
-        
+        const rawCat = req.body.categoria_id;
+
         // Convertir a número entero puro (remueve decimales como "999.0" y cadenas de texto)
         const cleanCategoryId = rawCat !== undefined && rawCat !== null && rawCat !== "" ? parseInt(rawCat, 10) : null;
 
         // 3. Crear el objeto normalizado
         const datosAActualizar = {
             ...req.body,
-            categoria_id: cleanCategoryId,
-            category_id: cleanCategoryId // Se envía en ambas nomenclaturas por compatibilidad
+            categoria_id: cleanCategoryId
         };
 
         // 4. Ejecutar la actualización en SQLite

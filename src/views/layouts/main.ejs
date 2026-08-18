@@ -23,73 +23,85 @@
     </form>
 
     <nav>
-        <a href="/cart"> Carrito (<%= totalCart %>)</a>
-        <a href="/register">Registrarse</a>
+        <a href="/cart">Carrito (<%= typeof totalCart !== 'undefined' ? totalCart : 0 %>)</a>
+        
+        <!-- SECCIÓN DINÁMICA DE USUARIO -->
+        <span id="user-info" style="display: none;">
+            <strong id="user-display-name" style="color: #0071e3; margin-left: 10px;">Usuario</strong>
+            <button id="logout-btn" style="background: none; border: none; color: #ff3b30; cursor: pointer; margin-left: 10px;">
+                Cerrar sesión
+            </button>
+        </span>
+
+        <!-- ENLACES SI NO ESTÁ LOGUEADO -->
+        <span id="auth-links">
+            <a href="/login">Iniciar Sesión</a>
+            <a href="/register">Registrarse</a>
+        </span>
     </nav>
 </header>
 
-
-    <main class="contenido-principal">
-       <%- include(body) %>
-    </main>
-
-    
-
-</body>
-</html>
+<main class="contenido-principal">
+    <%- include(body) %>
+</main>
 
 <footer class="footer">
-
     <div class="footer-container">
-
         <div class="footer-logo">
-
             <h2>Apple Store</h2>
-
-            <p>
-                Tecnología premium, diseño elegante y la mejor experiencia Apple.
-            </p>
-
+            <p>Tecnología premium, diseño elegante y la mejor experiencia Apple.</p>
         </div>
 
         <div class="footer-categorias">
-
             <h3>Categorías</h3>
-
             <a href="#iPhone">iPhone</a>
             <a href="#iPad">iPad</a>
             <a href="#MacBook">Mac</a>
-
         </div>
 
         <div class="footer-links">
-
             <h3>Enlaces</h3>
-
             <a href="/">Inicio</a>
             <a href="/cart">Carrito</a>
             <a href="/login">Login</a>
-
         </div>
 
         <div class="footer-contacto">
-
             <h3>Contacto</h3>
-
             <p>soporte@applestore.com</p>
-
             <p>+54 2657 00-0000</p>
-
         </div>
-
     </div>
 
     <div class="footer-copy">
-
-        <p>
-            © 2026 Apple Store - Todos los derechos reservados
-        </p>
-
+        <p>© 2026 Apple Store - Todos los derechos reservados</p>
     </div>
-
 </footer>
+
+<!-- SCRIPT PARA DETECTAR EL USUARIO EN EL BROWSER -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const userNameElement = document.getElementById('user-display-name');
+  const userInfo = document.getElementById('user-info');
+  const authLinks = document.getElementById('auth-links');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  // Obtenemos el nombre guardado en el navegador tras el login/registro
+  const savedName = localStorage.getItem('userName');
+
+  if (savedName && userInfo && authLinks) {
+    userNameElement.textContent = `Hola, ${savedName}`;
+    userInfo.style.display = 'inline-block';
+    authLinks.style.display = 'none'; // Oculta Registrarse/Iniciar Sesión
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('userName');
+      window.location.href = '/';
+    });
+  }
+});
+</script>
+</body>
+</html>
