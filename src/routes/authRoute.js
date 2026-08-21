@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const controller = require('../controllers/authController');
 
-// Vistas (GET)
-router.get('/login', authController.login);
-router.get('/register', authController.register);
+// login y register
+router.get("/login", controller.login);
+router.get("/register", controller.register);
+router.post("/register", controller.processRegister); // para procesar el registro de un usuario
 
 // Procesos (POST)
 router.post('/login', authController.processLogin);

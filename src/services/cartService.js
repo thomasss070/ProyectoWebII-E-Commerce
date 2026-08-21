@@ -1,20 +1,17 @@
 const db = require("../db/database");
 
-
 // buscar producto por id
-const obtenerProductoPorId = (id) => {
+const getProductById = (id) => {
     return db.prepare(`
         SELECT * FROM products WHERE id = ?
     `).get(id);
 };
 
-
-
 // agregar producto al carrito
 
-function agregarProducto(cart, productId) {
+function addProduct(cart, productId) {
 
-    const producto = obtenerProductoPorId(productId);
+    const producto = getProductById(productId);
 
     // si no existe en DB no hace nada
     if (!producto) return cart;
@@ -36,11 +33,11 @@ function agregarProducto(cart, productId) {
 }
 
 //obtener carrito con datos completos
-function obtenerCarrito(cart) {
+function getCart(cart) {
 
     return cart.map(item => {
 
-        const producto = obtenerProductoPorId(item.productId);
+        const producto = getProductById(item.productId);
 
         if (!producto) return null;
 
@@ -59,7 +56,7 @@ function obtenerCarrito(cart) {
 
 
 //aumentar cantidad
-function aumentarCantidad(cart, productId) {
+function increaseQuantity(cart, productId) {
 
     const item = cart.find(
         p => p.productId === productId
@@ -74,7 +71,7 @@ function aumentarCantidad(cart, productId) {
 
 
 // disminuir cantidad
-function disminuirCantidad(cart, productId) {
+function decreaseQuantity(cart, productId) {
 
     const item = cart.find(
         p => p.productId === productId
@@ -99,9 +96,9 @@ function remove(cart, productId) {
 
 
 module.exports = {
-    agregarProducto,
-    obtenerCarrito,
-    aumentarCantidad,
-    disminuirCantidad,
+    addProduct,
+    getCart,
+    increaseQuantity,
+    decreaseQuantity,
     remove
 };

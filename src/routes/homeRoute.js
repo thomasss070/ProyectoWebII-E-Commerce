@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/productController");
 
-// home
+// home pedir o ver productos
 router.get("/", controller.home);
 
 // carrito y checkout
 router.get("/cart", controller.cart);
 router.get("/checkout", controller.checkout);
 
-// error
+// error 
 router.get("/error", controller.error);
 
 module.exports = router;

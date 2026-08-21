@@ -1,12 +1,13 @@
 const categoryService = require("../services/categoryService");
+// Importa el servicio donde realmente ocurre la lógica para manipular los datos de categorías.
 
-module.exports = {
-    index(req, res) {
-        const categories = categoryService.findAll();
-        res.status(200).json(categories);
+module.exports = { //Exporta un objeto con 5 funciones para que el archivo de rutas (router) las pueda usar.
+    getAll(req, res) { //lista TODO 
+        const categories = categoryService.findAll();// busca todas las careogorias 
+                res.status(200).json(categories);
     },
 
-    show(req, res) {
+    getById(req, res) {//  muestra una categoria por id
         const category = categoryService.findById(req.params.id);
 
         if (!category) {
@@ -16,7 +17,7 @@ module.exports = {
         res.status(200).json(category);
     },
 
-    store(req, res) {
+    create(req, res) {
         const category = categoryService.create(req.body);
         res.status(201).json(category);
     },
@@ -31,7 +32,7 @@ module.exports = {
         res.status(200).json(category);
     },
 
-    destroy(req, res) {
+    delete(req, res) {
         const deleted = categoryService.remove(req.params.id);
 
         if (!deleted) {

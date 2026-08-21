@@ -5,8 +5,8 @@ const normalizeId = require("../utils/normalizeId");
 
 // home
 const home = (req, res) => {
-    const productos = productsServices.obtenerTodos();
-    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
+    const productos = productsServices.getAll();
+    const categorias = productsServices.getCategorias ? productsServices.getCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -19,8 +19,8 @@ const home = (req, res) => {
 // buscar
 const search = (req, res) => {
     const query = req.query.q;
-    const resultados = productsServices.buscar(query);
-    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
+    const resultados = productsServices.search(query);
+    const categorias = productsServices.getCategorias ? productsServices.getCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -32,8 +32,8 @@ const search = (req, res) => {
 
 // listado de productos
 const products = (req, res) => {
-    const productos = productsServices.obtenerTodos();
-    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
+    const productos = productsServices.getAll();
+    const categorias = productsServices.getCategorias ? productsServices.getCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -45,10 +45,10 @@ const products = (req, res) => {
 
 // detalle de producto
 const detail = (req, res) => {
-    const producto = productsServices.obtenerPorId(req.params.id);
+    const producto = productsServices.getById(req.params.id);
 
     if (!producto) {
-        const sugeridos = productsServices.obtenerTodos().slice(0, 3);
+        const sugeridos = productsServices.getAll().slice(0, 3);
 
         return res.status(404).render("layouts/main", {
             body: "../pages/error",
@@ -74,12 +74,12 @@ const detail = (req, res) => {
 // carrito
 const addCart = (req, res) => {
     const id = parseInt(req.params.id);
-    cartService.agregarProducto(req.session.cart, id);
+    cartService.addProduct(req.session.cart, id);
     res.redirect("/cart");
 };
 
 const cart = (req, res) => {
-    const cartProducts = cartService.obtenerCarrito(req.session.cart);
+    const cartProducts = cartService.getCart(req.session.cart);
 
     res.render("layouts/main", {
         body: "../pages/cart",
@@ -148,8 +148,8 @@ const error = (req, res) => {
 
 const orderByPrice = (req, res) => {
     const orden = req.query.orden;
-    const productos = productsServices.ordenarPorPrecio(orden);
-    const categorias = productsServices.obtenerCategorias ? productsServices.obtenerCategorias() : [];
+    const productos = productsServices.orderByPrice(orden);
+    const categorias = productsServices.getCategorias ? productsServices.getCategorias() : [];
 
     res.render("layouts/main", {
         body: "../pages/index",
@@ -192,11 +192,11 @@ const apiGetAll = (req, res) => {
             // Convierte "1" o "1.0" a un número entero (1)
             const categoriaId = parseInt(rawCat, 10);
             
-            const productos = productsServices.obtenerPorCategoria(categoriaId);
+            const productos = productsServices.getByCategory(categoriaId);
             return res.status(200).json(productos);
         }
 
-        const todosLosProductos = productsServices.obtenerTodos();
+        const todosLosProductos = productsServices.getAll();
         res.status(200).json(todosLosProductos);
     } catch (error) {
         console.error("Error exacto en apiGetAll:", error);
@@ -206,7 +206,7 @@ const apiGetAll = (req, res) => {
 
 // API - Obtener un producto por ID
 const apiGetById = (req, res) => {
-    const producto = productsServices.obtenerPorId(req.params.id);
+    const producto = productsServices.getById(req.params.id);
 
     if (!producto) {
         return res.status(404).json({
@@ -229,7 +229,7 @@ const apiCreate = (req, res) => {
             category_id: cleanCategoryId
         };
 
-        const id = productsServices.crear(datosACrear);
+        const id = productsServices.create(datosACrear);
 
         res.status(201).json({
             message: "Producto creado",
@@ -249,7 +249,7 @@ const apiUpdate = (req, res) => {
         const id = req.params.id;
 
         // 1. Verificar si el producto existe
-        const productoExistente = productsServices.obtenerPorId(id);
+        const productoExistente = productsServices.getById(id);
         if (!productoExistente) {
             return res.status(404).json({
                 error: "Producto no encontrado"
@@ -269,7 +269,7 @@ const apiUpdate = (req, res) => {
         };
 
         // 4. Ejecutar la actualización en SQLite
-        productsServices.actualizar(id, datosAActualizar);
+        productsServices.update(id, datosAActualizar);
 
         res.status(200).json({
             message: "Producto actualizado con éxito"
@@ -286,7 +286,7 @@ const apiUpdate = (req, res) => {
 const apiDelete = (req, res) => {
     try {
         const id = req.params.id;
-        const result = productsServices.eliminar(id);
+        const result = productsServices.delete(id);
 
         // result.changes indica cuántas filas fueron afectadas en SQLite
         if (!result || result.changes === 0) {
@@ -309,7 +309,7 @@ const apiDelete = (req, res) => {
 // API - Obtener todas las categorías
 const apiGetCategories = (req, res) => {
     try {
-        const categorias = productsServices.obtenerCategorias();
+        const categorias = productsServices.getCategorias();
         res.status(200).json(categorias);
     } catch (error) {
         res.status(500).json({ error: "Error al obtener categorías" });

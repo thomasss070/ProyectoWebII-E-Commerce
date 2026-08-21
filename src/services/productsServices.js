@@ -1,7 +1,7 @@
 const db = require("../db/database");
 
 // Obtener todos los productos
-const obtenerTodos = () => {
+const getAll = () => {
     const productos = db.prepare('SELECT * FROM products').all();
 
     return productos.map((prod) => {
@@ -23,7 +23,7 @@ const obtenerTodos = () => {
 };
 
 // Obtener producto por ID
-const obtenerPorId = (id) => {
+const getById = (id) => {
     const producto = db.prepare(`
         SELECT * FROM products WHERE id = ?
     `).get(id);
@@ -47,12 +47,12 @@ const obtenerPorId = (id) => {
 };
 
 // Obtener todas las categorías
-const obtenerCategorias = () => {
+const getCategorias = () => {
     return db.prepare('SELECT * FROM categories').all();
 };
 
 // Filtrar productos por ID de categoría (categoria_id)
-const obtenerPorCategoria = (categoriaId) => {
+const getByCategory = (categoriaId) => {
     return db.prepare(`
         SELECT * FROM products 
         WHERE CAST(categoria_id AS INTEGER) = ?
@@ -60,7 +60,7 @@ const obtenerPorCategoria = (categoriaId) => {
 };
 
 // Buscar por nombre
-const buscar = (nombre) => {
+const search = (nombre) => {
     const productos = db.prepare(`
         SELECT * FROM products
         WHERE nombre LIKE ?
@@ -75,7 +75,7 @@ const buscar = (nombre) => {
 };
 
 // Ordenar por precio 
-function ordenarPorPrecio(orden = "asc") {
+function orderByPrice(orden = "asc") {
     if (orden === "desc") {
         return db.prepare(`
             SELECT * FROM products
@@ -102,7 +102,7 @@ const getRelacionados = (categoryId, currentProductId) => {
 };
 
 // Obtener sugeridos aleatorios 
-const obtenerSugeridos = () => {
+const getSugeridos = () => {
     const productos = db.prepare(`
         SELECT * FROM products
         ORDER BY RANDOM()
@@ -118,39 +118,32 @@ const obtenerSugeridos = () => {
 };
 
 const normalizarCategoriaId = (valor, productoExistente = null) => {
-    if (valor === null || valor === '' || valor === 'null') {
-        return null;
-    }
-
+    // 1. Si no se envió el campo, mantener la categoría previa
     if (valor === undefined) {
         return productoExistente?.categoria_id ?? null;
     }
 
-    if (typeof valor === 'number') {
-        return Number.isFinite(valor) ? Math.trunc(valor) : (productoExistente?.categoria_id ?? null);
+    // 2. Normalizar a string y limpiar espacios
+    const texto = String(valor ?? '').trim();
+
+    // 3. Manejar casos nulos o vacíos
+    if (!texto || texto === 'null') {
+        return null;
     }
 
-    if (typeof valor === 'string') {
-        const texto = valor.trim();
-
-        if (texto === '' || texto === 'null') {
-            return null;
-        }
-
-        const numerico = Number(texto);
-        if (!Number.isNaN(numerico)) {
-            return Math.trunc(numerico);
-        }
-
-        const categoria = db.prepare('SELECT id FROM categories WHERE nombre = ?').get(texto);
-        return categoria ? categoria.id : (productoExistente?.categoria_id ?? null);
+    // 4. Si es/representa un número válido, truncar a entero
+    const numerico = Number(texto);
+    if (Number.isFinite(numerico)) {
+        return Math.trunc(numerico);
     }
 
-    return productoExistente?.categoria_id ?? null;
+    // 5. Buscar por nombre de categoría en la BD
+    const categoria = db.prepare('SELECT id FROM categories WHERE nombre = ?').get(texto);
+    return categoria?.id ?? productoExistente?.categoria_id ?? null;
 };
 
 // Crear producto
-const crear = (producto) => {
+const create = (producto) => {
     const categoriaId = normalizarCategoriaId(producto.categoria_id ?? producto.category_id ?? producto.categoria);
 
     const result = db.prepare(`
@@ -179,7 +172,7 @@ const crear = (producto) => {
 };
 
 // Actualizar producto
-const actualizar = (id, producto) => {
+const update = (id, producto) => {
     const numericId = !isNaN(id) ? Number(id) : id;
 
     // 1. Obtenemos los datos actuales del producto desde SQLite
@@ -243,7 +236,7 @@ const actualizar = (id, producto) => {
 };
 
 // Eliminar producto
-const eliminar = (id) => {
+const remove = (id) => {
     const numericId = !isNaN(id) ? Number(id) : id;
 
     return db.prepare(`
@@ -253,15 +246,15 @@ const eliminar = (id) => {
 };
 
 module.exports = {
-    obtenerTodos,
-    obtenerPorId,
-    obtenerCategorias,
-    obtenerPorCategoria,
-    buscar,
-    ordenarPorPrecio,
+    getAll,
+    getById,
+    getCategorias,
+    getByCategory,
+    search,
+    orderByPrice,
     getRelacionados,
-    obtenerSugeridos,
-    crear,
-    actualizar,
-    eliminar
+    getSugeridos,
+    create,
+    update,
+    remove
 };

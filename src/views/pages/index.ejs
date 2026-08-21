@@ -68,7 +68,7 @@
     <h2 class="categoria-titulo"><%= cat.nombre %></h2>
 
     <ul class="productos" id="cat-<%= cat.id %>">
-        <!-- 💡 Usamos == para evitar que falle por diferencias de tipo (String vs Number) -->
+        <!--  Usamos == para evitar que falle por diferencias de tipo (String vs Number) -->
         <% productos.filter(p => Number(p.categoria_id) === Number(cat.id)).forEach(p => { %>
             <li>
                 <a href="/products/<%= p.id %>">

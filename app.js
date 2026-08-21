@@ -1,6 +1,5 @@
-// ==========================================
-// 1. IMPORTACIÓN DE MÓDULOS Y DEPENDENCIAS
-// ==========================================
+
+// IMPORTACIÓN DE MÓDULOS Y DEPENDENCIAS
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -24,17 +23,14 @@ const apiProfileRoute = require("./src/routes/api/apiProfileRoute"); // Ajusta s
 // Inicialización de Express
 const app = express();
 
-// ==========================================
 // 2. CONFIGURACIÓN DEL MOTOR DE VISTAS (EJS)
-// ==========================================
 app.set('views', path.join(__dirname, 'src/views'));
 app.set('view engine', 'ejs');
 app.use(expressLayouts); // Activa el middleware de layouts para EJS
 app.set('layout', 'layouts/main');
 
-// ==========================================
+
 // 3. MIDDLEWARES GLOBALES Y CONFIGURACIÓN
-// ==========================================
 // Seguridad y Archivos Estáticos
 app.use(cors());
 app.use(express.static('public'));
@@ -50,9 +46,8 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// ==========================================
 // 4. MIDDLEWARES PERSONALIZADOS
-// ==========================================
+
 // Middleware para inicializar y hacer accesible el carrito en todas las vistas
 app.use((req, res, next) => {
     if (!req.session.cart) {
@@ -70,9 +65,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// ==========================================
 // 5. RUTAS DE LA APLICACIÓN
-// ==========================================
 
 // Rutas Principales de la Web
 app.use('/', homeRoutes);
@@ -86,9 +79,8 @@ app.use('/api/products', apiProductRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/stats', apiStatsRoute);
 
-// ==========================================
+
 // 6. MANEJO DE ERRORES
-// ==========================================
 
 // 1. CAPTURA RUTAS NO ENCONTRADAS (404)
 // Debe ir justo después de todas tus rutas normales y antes del manejador de errores
@@ -115,9 +107,8 @@ app.use((err, req, res, next) => {
         mensaje: mensaje
     });
 });
-// ==========================================
+
 // 7. INICIALIZACIÓN DEL SERVIDOR
-// ==========================================
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
