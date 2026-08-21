@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const productController = require("../controllers/productController");
+const CartController = require("../controllers/CartController");
 
 // carrito enviar o crear datos
-router.post("/cart/add/:id", productController.addCart);
-router.post("/cart/increase", productController.increase);
-router.post("/cart/decrease", productController.decrease);
-router.post("/cart/remove", productController.remove);
+router.post("/cart/add/:id", CartController.addCart);
+router.post("/cart/increase", CartController.increase);
+router.post("/cart/decrease",  CartController.decrease);
+router.post("/cart/remove", CartController.remove);
 
 module.exports = router;
