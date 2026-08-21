@@ -151,7 +151,7 @@ const getProductDetail = (req, res) => {
 // API - Obtener todos los productos
 const apiGetAll = (req, res) => {
     try {
-        const rawCat = req.query.categoria_id ?? req.query.category_id;
+        const rawCat = req.query.categoria_id ?? req.query.category_id
         
         if (rawCat !== undefined && rawCat !== null && rawCat !== '') {
             // Convierte "1" o "1.0" a un número entero (1)
@@ -185,13 +185,12 @@ const apiGetById = (req, res) => {
 // API - Crear un producto
 const apiCreate = (req, res) => {
     try {
-        const rawCat = req.body.categoria_id ?? req.body.category_id ?? req.body.categoriaId ?? req.body.categoryId ?? req.body.categoria;
+        const rawCat = req.body.categoria_id ;
         const cleanCategoryId = rawCat !== undefined && rawCat !== null && rawCat !== "" ? parseInt(rawCat, 10) : null;
 
         const datosACrear = {
             ...req.body,
             categoria_id: cleanCategoryId,
-            category_id: cleanCategoryId
         };
 
         const id = productsServices.create(datosACrear);

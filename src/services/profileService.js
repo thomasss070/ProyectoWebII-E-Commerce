@@ -9,7 +9,7 @@ try {
 }
 
 const getAllProfiles = () => {
-    // Seleccionamos las columnas de tu tabla incluyendo 'role'
+    // Seleccionamos las columnas de tu tabla 
     const query = db.prepare("SELECT id, name, email, role, created_at FROM users");
     return query.all();
 };
